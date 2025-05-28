@@ -63,11 +63,6 @@ export function SignupForm() {
     // Handle form submission (e.g., API call)
   }
 
-  const handleGoogleSignup = () => {
-    console.log("Google Sign Up clicked")
-    // TODO: Integrate Google OAuth here
-  }
-
   return (
     <div className="w-full max-w-lg bg-white p-8 rounded-xl shadow-md">
       <h2 className="text-xl font-bold text-center mb-4">Create an Account</h2>
@@ -191,12 +186,11 @@ export function SignupForm() {
             type="button"
             variant="outline"
             className="w-full flex items-center justify-center gap-2"
-            onClick={handleGoogleSignup}
           >
             <img
               src="https://www.svgrepo.com/show/475656/google-color.svg"
               alt="Google"
-              className="h-5 w-5"
+              className="h-5 w-5 g-signin2" data-onsuccess="onSignIn"
             />
             Sign up with Google
           </Button>
