@@ -1,10 +1,12 @@
 import React from 'react'
+import Carousal from '@/components/Carousal';
+import NavBar from '@/components/NavBar';
 
 const Home = () => {
   return (
-    <div>
-      <h1>Welcome to the Home Page</h1>
-      <p>This is the main content area.</p>
+    <div className='container'>
+      <NavBar />
+      <Carousal />
     </div>
   )
 }
