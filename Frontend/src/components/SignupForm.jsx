@@ -2,6 +2,8 @@ import * as React from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
+import { GoogleLogin, googleLogout } from "@react-oauth/google"
+import { useNavigate } from 'react-router-dom';
 
 import {
   Form,
@@ -32,11 +34,13 @@ const formSchema = z
   .object({
     fullName: z.string().min(3, "Full name must be at least 3 characters"),
     email: z.string().email("Invalid email address"),
-    country: z.string().nonempty("Select a country"),
+    country: z.string("Select a country"),
     phone: z
       .string()
-      .min(7, "Phone number must be at least 7 digits")
-      .max(15, "Phone number must be less than 15 digits"),
+      .optional()
+      .refine((val) => !val || (val.length >= 7 && val.length <= 15), {
+        message: "Phone number must be between 7 and 15 digits",
+      }),
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z.string(),
   })
@@ -46,6 +50,35 @@ const formSchema = z
   })
 
 export function SignupForm() {
+  const navigate = useNavigate();
+
+    //handle google sign in success
+  const handleSignInWithGoogle= (response)=> {
+    const { credential } = response;
+    fetch("http://localhost:3002/api/v1/signup/google", 
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({googleToken: credential}),
+        credentials: 'include'
+      },
+    )
+    .then((response)=> {
+      if(!response.ok){
+        throw new Error(`Server responded with status ${response.status}`);
+      }
+    })
+    .then((data)=> {
+      navigate("/home")
+    })
+    .catch((error)=> {
+      console.error("Error during Google sign-in:", error);
+      googleLogout();
+    });
+  }
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -182,18 +215,11 @@ export function SignupForm() {
           </div>
 
           {/* Google Sign-Up Button */}
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full flex items-center justify-center gap-2"
-          >
-            <img
-              src="https://www.svgrepo.com/show/475656/google-color.svg"
-              alt="Google"
-              className="h-5 w-5 g-signin2" data-onsuccess="onSignIn"
-            />
-            Sign up with Google
-          </Button>
+          <GoogleLogin
+            onSuccess={(response)=> handleSignInWithGoogle(response)}
+            onError={()=> googleLogout()}  
+            auto_select= {true}
+          />
         </form>
       </Form>
     </div>
