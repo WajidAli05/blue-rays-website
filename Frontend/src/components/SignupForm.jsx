@@ -53,31 +53,57 @@ export function SignupForm() {
   const navigate = useNavigate();
 
     //handle google sign in success
-  const handleSignInWithGoogle= (response)=> {
-    const { credential } = response;
-    fetch("http://localhost:3002/api/v1/signup/google", 
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({googleToken: credential}),
-        credentials: 'include'
-      },
-    )
-    .then((response)=> {
-      if(!response.ok){
-        throw new Error(`Server responded with status ${response.status}`);
+  // const handleSignInWithGoogle= (response)=> {
+  //   const { credential } = response;
+  //   fetch("http://localhost:3001/api/v1/signup/google", 
+  //     {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json"
+  //       },
+  //       body: JSON.stringify({googleToken: credential}),
+  //       credentials: 'include'
+  //     },
+  //   )
+  //   .then((response)=> {
+  //     console.log("Response from server:", response);
+  //     if(!response.ok){
+  //       throw new Error(`Server responded with status ${response.status}`);
+  //     }
+  //   })
+  //   .then((data)=> {
+  //     console.log(data);
+  //     navigate("/home")
+  //   })
+  //   .catch((error)=> {
+  //     console.error("Error during Google sign-in:", error);
+  //     googleLogout();
+  //   });
+  // }
+
+  const handleSignInWithGoogle = (response) => {
+  const { credential } = response;
+
+  fetch("http://localhost:3001/api/v1/signup/google", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({ googleToken: credential }),
+  })
+    .then(res => res.json().then(data => ({ status: res.status, data })))
+    .then(({ status, data }) => {
+      if (status >= 400) {
+        throw new Error(data.message || "Google sign-in failed");
       }
+
+      console.log("Google Sign-In success:", data);
+      navigate("/home");
     })
-    .then((data)=> {
-      navigate("/home")
-    })
-    .catch((error)=> {
-      console.error("Error during Google sign-in:", error);
+    .catch(err => {
+      console.error("Error during Google sign-in:", err.message);
       googleLogout();
     });
-  }
+};
 
   const form = useForm({
     resolver: zodResolver(formSchema),
