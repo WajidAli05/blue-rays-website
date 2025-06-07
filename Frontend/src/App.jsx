@@ -8,7 +8,7 @@ function App() {
     <main className="min-h-screen bg-gray-50 dark:bg-black flex items-center justify-center">
       <Routes>
         <Route path="/signup" element={<SignupForm />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/" element={<Home />} />
       </Routes>
     </main>
   )
