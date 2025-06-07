@@ -354,7 +354,7 @@ export function SignupForm() {
         </Stage>
       </Canvas>
 
-      <div className="relative z-10 w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white/90 backdrop-blur rounded-2xl p-8 shadow-xl">
+      <div className="signup-div relative z-10 w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white/90 backdrop-blur rounded-2xl p-8 shadow-xl">
         <h2 className="text-2xl font-bold text-center mb-6 text-purple-700">Create Your Account</h2>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
