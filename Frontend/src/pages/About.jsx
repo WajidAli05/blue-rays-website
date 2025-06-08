@@ -6,7 +6,6 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Float } from "@react-three/drei";
 import { Award, ShieldCheck, Lightbulb, DollarSign } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import Footer from "@/components/Footer";
 
 const features = [
   {
@@ -133,9 +132,6 @@ const About = () => {
           </p>
         </motion.div>
       </section>
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 };

@@ -12,7 +12,7 @@ import { Link } from "react-router-dom"
 
 const Footer = () => {
   return (
-    <footer className="bg-blue-950 text-white pt-10 pb-6 px-6">
+    <footer className="bg-blue-600 text-white pt-10 pb-6 px-6 rounded-t-2xl">
       <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
 
         {/* Company Info */}

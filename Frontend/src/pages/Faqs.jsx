@@ -2,7 +2,6 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Float } from "@react-three/drei";
 import { motion } from "framer-motion";
-import Footer from "@/components/Footer";
 
 const faqs = [
   {
@@ -96,7 +95,6 @@ export default function Faqs() {
           </Accordion>
         </div>
       </div>
-      <Footer />
     </div>
   );
 }

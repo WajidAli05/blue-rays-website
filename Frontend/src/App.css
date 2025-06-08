@@ -15,22 +15,22 @@
 /* Global Scrollbar Styling for All Elements */
 * {
   scrollbar-width: thin; /* Firefox */
-  scrollbar-color: #7b3fe4 #f0f0f0; /* thumb and track colors */
+  scrollbar-color: #2563eb #e5e7eb; /* thumb (blue) and track (light gray) */
 }
 
 /* Chrome, Safari, Edge (WebKit-based browsers) */
 *::-webkit-scrollbar {
-  width: 14px;   /* increased width */
+  width: 14px;   /* for vertical scroll */
   height: 14px;  /* for horizontal scroll */
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: #7b3fe4; /* scrollbar thumb color */
+  background-color: #2563eb; /* blue thumb */
   border-radius: 8px;
-  border: 3px solid #ffffff; /* padding effect */
+  border: 3px solid #ffffff; /* inner padding for contrast */
 }
 
 *::-webkit-scrollbar-track {
-  background: #f0f0f0; /* scrollbar track color */
+  background: #e5e7eb; /* light gray track */
   border-radius: 8px;
 }
