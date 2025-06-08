@@ -1,11 +1,12 @@
-import React from 'react'
+import React from 'react';
+import HomeCarousal from '@/components/HomeCarousal';
 
 const Home = () => {
-  const announcementText = "Welcome to our store! Enjoy exclusive discounts and offers.";
   return (
-    <div className='container'>
+    <div className="flex flex-col">
+      <HomeCarousal />
     </div>
-  )
-}
+  );
+};
 
 export { Home };
