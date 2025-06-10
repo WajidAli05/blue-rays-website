@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
 import {
   NavigationMenu,
@@ -11,27 +11,44 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 
-const categories = [
-  { key: "1", label: "Electronics" },
-  { key: "2", label: "Clothing" },
-  { key: "3", label: "Books" },
-  { key: "4", label: "Home & Kitchen" },
-  { key: "5", label: "Sports & Outdoors" },
-  { key: "6", label: "Toys & Games" },
-  { key: "7", label: "Health & Beauty" },
-]
-
-const subcategories = {
-  "1": ["Mobiles", "Laptops", "Cameras", "Headphones", "Accessories"],
-  "2": ["Men", "Women", "Kids", "Footwear", "Accessories"],
-  "3": ["Fiction", "Non-Fiction", "Academic", "Children's Books"],
-  "4": ["Furniture", "Kitchenware", "Decor", "Lighting"],
-  "5": ["Fitness", "Cycling", "Camping", "Outdoor Gear"],
-  "6": ["Board Games", "Action Figures", "Puzzles"],
-  "7": ["Skincare", "Haircare", "Supplements", "Makeup"],
-}
-
 const CategoriesNavBar = () => {
+// State variables
+const [categories, setCategories] = useState([]);
+const [subcategories, setSubcategories] = useState({});
+
+// Fetch categories and subcategories
+useEffect(() => {
+  fetch('http://localhost:3001/api/v1/category', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'include', // <- move credentials outside headers
+  })
+    .then(response => response.json())
+    .then(res => {
+      if (res.status && Array.isArray(res.data)) {
+        // Extract categories
+        const fetchedCategories = res.data.map(cat => ({
+          key: cat.key,
+          label: cat.label,
+        }));
+
+        // Extract subcategories
+        const fetchedSubcategories = {};
+        res.data.forEach(cat => {
+          fetchedSubcategories[cat.key] = cat.subCategories || [];
+        });
+
+        setCategories(fetchedCategories);
+        setSubcategories(fetchedSubcategories);
+      }
+    })
+    .catch(error => {
+      console.error("Error fetching categories:", error);
+    });
+}, []);
+
   return (
     <div className="w-full border-b shadow-sm z-40">
       <div className="max-w-screen-2xl mx-auto flex items-center justify-between px-6 py-3 gap-8">
