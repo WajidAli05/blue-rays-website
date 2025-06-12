@@ -40,6 +40,11 @@ const categories = [
     image: "/src/assets/categories/beauty.jpg",
     description: "Look and feel your best with wellness products.",
   },
+  {
+    name: "Digital Products",
+    image: "/src/assets/categories/digital.jpg",
+    description: "Instant access to software, e-books, and online courses.",
+  }
 ];
 
 const cardVariants = {
