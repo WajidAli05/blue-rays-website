@@ -10,6 +10,7 @@ import CategoriesNavBar from './components/CategoriesNavBar';
 import Footer from './components/Footer';
 import Contact from './pages/Contact';
 import LoginPage from './pages/LoginPage';
+import Products from './pages/Products';
 
 function App() {
   const location = useLocation();
@@ -36,6 +37,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/faqs" element={<Faqs />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/products/:category" element={<Products />} />
         </Routes>
       </main>
 

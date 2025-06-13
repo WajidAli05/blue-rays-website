@@ -88,7 +88,7 @@ const CategoryCards = () => {
                 </p>
                 <Button
                   onClick={() =>
-                    navigate(`/products/category/${cat.name.toLowerCase()}`)
+                    navigate(`/products/${cat.name.toLowerCase()}`)
                   }
                   className="bg-purple-600 hover:bg-purple-700 text-white mt-auto cursor-pointer"
                 >

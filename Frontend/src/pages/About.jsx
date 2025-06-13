@@ -1,11 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Float } from "@react-three/drei";
 import { Award, ShieldCheck, Lightbulb, DollarSign } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
+import Loader from "@/components/Loader";
 
 const features = [
   {
@@ -31,6 +32,29 @@ const features = [
 ];
 
 const About = () => {
+  const [showLoader, setShowLoader] = useState(false);
+  const [isPageReady, setIsPageReady] = useState(false);
+
+  useEffect(() => {
+    const loaderTimer = setTimeout(() => {
+      if (!isPageReady) setShowLoader(true);
+    }, 300); // Delay before showing loader
+
+    const readyFrame = requestAnimationFrame(() => {
+      setIsPageReady(true);
+      setShowLoader(false);
+    });
+
+    return () => {
+      clearTimeout(loaderTimer);
+      cancelAnimationFrame(readyFrame);
+    };
+  }, []);
+
+  if (!isPageReady && showLoader) {
+    return <Loader size="lg" message="Loading about page..." />;
+  }
+
   return (
     <div className="w-full min-h-screen bg-[#f9fbfd] text-gray-900 flex flex-col">
       {/* Header Section with 3D */}
@@ -98,9 +122,7 @@ const About = () => {
                     <motion.div whileHover={{ rotate: 12 }}>
                       <Icon className="w-10 h-10 text-blue-600 group-hover:text-white transition-colors duration-300" />
                     </motion.div>
-                    <h3 className="font-semibold text-lg">
-                      {feature.title}
-                    </h3>
+                    <h3 className="font-semibold text-lg">{feature.title}</h3>
                     <p className="text-sm text-gray-600 group-hover:text-white transition-colors duration-300">
                       {feature.description}
                     </p>

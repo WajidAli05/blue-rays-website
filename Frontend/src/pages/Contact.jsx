@@ -1,11 +1,12 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Canvas } from "@react-three/fiber";
 import { Float, OrbitControls } from "@react-three/drei";
 import { Mail, Phone, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Loader from "@/components/Loader";
 
 function ContactForm() {
   return (
@@ -33,6 +34,31 @@ function ContactForm() {
 }
 
 const Contact = () => {
+  const [showLoader, setShowLoader] = useState(false);
+  const [isPageReady, setIsPageReady] = useState(false);
+
+  useEffect(() => {
+    // Set a timer to show the loader only if loading takes more than 300ms
+    const loaderTimer = setTimeout(() => {
+      if (!isPageReady) setShowLoader(true);
+    }, 300);
+
+    // Simulate immediate readiness (like page layout and 3D rendering mounting)
+    const renderReady = requestAnimationFrame(() => {
+      setIsPageReady(true);
+      setShowLoader(false);
+    });
+
+    return () => {
+      clearTimeout(loaderTimer);
+      cancelAnimationFrame(renderReady);
+    };
+  }, []);
+
+  if (!isPageReady && showLoader) {
+    return <Loader size="lg" message="Preparing contact page..." />;
+  }
+
   return (
     <div className="min-h-screen flex flex-col bg-white text-gray-900">
       {/* Hero Section with Text Left and 3D Model Right */}
