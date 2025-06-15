@@ -3,12 +3,19 @@ import { useParams } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import Loader from '@/components/Loader';
 import { Separator } from "@/components/ui/separator"
+import FiltersBar from '@/components/FiltersBar';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); // Add error state
+  const [error, setError] = useState(null);
   const { category } = useParams();
+  const [filters, setFilters] = useState({
+    category: [],
+    price: [0, 1000],
+    sort: "",
+  });
+  const [subCategories, setSubCategories] = useState([]);
 
   const fetchProducts = () => {
     setLoading(true);
@@ -30,7 +37,6 @@ const Products = () => {
         return response.json();
       })
       .then((data) => {
-        console.log('Products fetched:', data);
         
         // Check if the response indicates success and has data
         if (data.status && data.data) {
@@ -56,11 +62,51 @@ const Products = () => {
     }
   }, [category]);
 
+  //fetch sub categories for the category passed in param
+  const fetchSubCategories = () => {
+    fetch(`http://localhost:3001/api/v1/subcategories/${category}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then((data)=> {
+      setSubCategories(data.data)
+    })
+    .catch((error)=>{
+      console.log(error)
+    })
+  }
+
+  useEffect(()=> {
+    fetchSubCategories()
+  }, [])
+
+  const handleFilterChange = (updatedFilters) => {
+  setFilters(updatedFilters);
+};
+
+const handleFilterReset = () => {
+  setFilters({
+    category: [],
+    price: [0, 1000],
+    sort: "",
+  });
+};
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h2 className="text-2xl font-bold mb-6 capitalize">
         {category ? category.replace(/%20/g, ' ').replace(/%26/g, '&') : 'Products'}
       </h2>
+      <Separator className='mb-5' />
+      <FiltersBar
+        filters={filters}
+        subCategories={subCategories}
+        onChange={handleFilterChange}
+        onReset={handleFilterReset}
+      />
       <Separator className='mb-5' />
 
       {loading ? (
