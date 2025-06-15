@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import Loader from '@/components/Loader';
+import { Separator } from "@/components/ui/separator"
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -60,6 +61,7 @@ const Products = () => {
       <h2 className="text-2xl font-bold mb-6 capitalize">
         {category ? category.replace(/%20/g, ' ').replace(/%26/g, '&') : 'Products'}
       </h2>
+      <Separator className='mb-5' />
 
       {loading ? (
         <Loader size="lg" message="Loading products..." />
