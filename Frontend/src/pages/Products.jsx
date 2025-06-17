@@ -7,6 +7,7 @@ import FiltersBar from '@/components/FiltersBar';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { category } = useParams();
@@ -41,6 +42,7 @@ const Products = () => {
         // Check if the response indicates success and has data
         if (data.status && data.data) {
           setProducts(data.data);
+          setAllProducts(data.data)
         } else {
           // Handle case where API returns success=false
           setProducts([]);
@@ -84,15 +86,51 @@ const Products = () => {
   }, [])
 
   const handleFilterChange = (updatedFilters) => {
-  setFilters(updatedFilters);
+  setFilters(updatedFilters)
+  filterProductsBySetFilters(updatedFilters)
 };
 
 const handleFilterReset = () => {
-  setFilters({
+  const defaultFilters = {
     category: [],
     price: [0, 1000],
     sort: "",
-  });
+  }
+  setFilters(defaultFilters);
+  setProducts(allProducts)
+};
+
+//filter products based on the filters
+const filterProductsBySetFilters = (updatedFilters) => {
+  let filtered = [...allProducts];
+  
+  //change all sub_categories in the filters to lower case
+  const normalizedCategories = updatedFilters.category.map((cat)=> cat.toLowerCase())
+
+  // Filter by category
+  if (normalizedCategories.length > 0) {
+    filtered = filtered.filter((product) =>
+    normalizedCategories.includes(product.sub_category?.toLowerCase())
+    );
+  }
+
+  // Filter by price
+  filtered = filtered.filter(
+    (product) =>
+      product.price >= updatedFilters.price[0] &&
+      product.price <= updatedFilters.price[1]
+  );
+
+  // Sort
+  if (updatedFilters.sort === "priceLowHigh") {
+    filtered.sort((a, b) => a.price - b.price);
+  } else if (updatedFilters.sort === "priceHighLow") {
+    filtered.sort((a, b) => b.price - a.price);
+  } else if (updatedFilters.sort === "rating") {
+    filtered.sort((a, b) => b.rating - a.rating);
+  }
+
+  setProducts(filtered);
 };
 
   return (
