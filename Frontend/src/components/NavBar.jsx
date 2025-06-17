@@ -8,7 +8,8 @@ import {
   NavigationMenuList,
   NavigationMenuLink,
 } from "@/components/ui/navigation-menu"
-
+import { Badge } from "@/components/ui/badge"
+import { useCart } from "@/contexts/CartContext"
 import {
   Home,
   Info,
@@ -21,7 +22,10 @@ import {
 
 const NavBar = () => {
   const [user, setUser] = useState(null)
+  const { cartItems } = useCart();
   const location = useLocation()
+
+  const totalItems = cartItems.reduce((sum, item) => sum + item.qty, 0);
 
   const handleLogout = () => setUser(null)
 
@@ -61,12 +65,21 @@ const NavBar = () => {
 
         {/* Right Side Icons */}
         <div className="flex items-center gap-4">
-          <Link
-            to="/cart"
-            className="text-muted-foreground hover:text-primary hover:scale-110 transition-transform"
+        <Link
+          to="/cart"
+          className="relative text-muteacd-foreground hover:text-primary hover:scale-110 transition-transform"
+        >
+          {/* Badge positioned absolutely */}
+          <Badge
+            className="absolute -top-3 -right-4 h-5 min-w-5 rounded-full px-1 text-xs font-mono tabular-nums z-10"
+            variant="destructive"
           >
-            <ShoppingCart className="w-5 h-5" />
-          </Link>
+            {totalItems}
+          </Badge>
+
+          {/* Cart icon */}
+          <ShoppingCart className="w-5 h-5" />
+        </Link>
 
           {!user ? (
             <Link

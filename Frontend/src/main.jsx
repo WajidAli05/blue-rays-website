@@ -4,14 +4,16 @@ import './index.css'
 import App from './App.jsx'
 import { BrowserRouter } from "react-router";
 import { GoogleOAuthProvider } from '@react-oauth/google'
+import { CartProvider } from './contexts/CartContext.jsx'
 
-// const CLIENT_ID= '68102451111-7kfgs4gbk81f3189r5bvdhjf700j5db3.apps.googleusercontent.com'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
-        <App />
+        <CartProvider>
+          <App />
+        </CartProvider>
       </GoogleOAuthProvider>
     </BrowserRouter>
   </StrictMode>,
