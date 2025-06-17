@@ -175,9 +175,9 @@ const filterProductsBySetFilters = (updatedFilters) => {
           ))}
         </div>
       ) : (
-        <p className="text-center text-muted-foreground py-8">
-          No products found in this category.
-        </p>
+    <p className="text-center mt-12 px-4 py-6 border border-red-500 bg-red-100 text-red-700 rounded-md font-medium">
+      No products found in this category.
+    </p>
       )}
     </div>
   );

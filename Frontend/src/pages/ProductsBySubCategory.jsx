@@ -29,7 +29,7 @@ const ProductsBySubCategory = () => {
       })
       .catch(err => {
         console.error("Fetch error:", err)
-        setError("Failed to load products")
+        setError(err.message)
       })
       .finally(() => {
         setLoading(false)
@@ -59,11 +59,13 @@ const ProductsBySubCategory = () => {
 
   if (error) {
     return (
-      <div className="w-full border-b shadow-sm z-40 bg-white dark:bg-gray-900">
-        <div className="max-w-screen-2xl mx-auto px-6 py-4 text-sm text-red-500">
+    <div className="w-full border-b shadow-sm z-40 bg-white dark:bg-gray-900">
+      <div className="max-w-screen-2xl mx-auto px-6 py-4">
+        <div className="border border-red-500 bg-red-100 text-red-700 rounded-md px-4 py-3 text-sm font-medium">
           {error}
         </div>
       </div>
+    </div>
     )
   }
 
