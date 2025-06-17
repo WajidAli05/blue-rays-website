@@ -12,45 +12,73 @@ import {
 } from "@/components/ui/navigation-menu"
 
 const CategoriesNavBar = () => {
-// State variables
-const [categories, setCategories] = useState([]);
-const [subcategories, setSubcategories] = useState({});
+  const [categories, setCategories] = useState([]);
+  const [subcategories, setSubcategories] = useState({});
+  const [loading, setLoading] = useState(true); // NEW
+  const [error, setError] = useState(null);     // NEW
 
-// Fetch categories and subcategories
-useEffect(() => {
-  fetch('http://localhost:3001/api/v1/category', {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    credentials: 'include', // <- move credentials outside headers
-  })
-    .then(response => response.json())
-    .then(res => {
-      if (res.status && Array.isArray(res.data)) {
-        // Extract categories
-        const fetchedCategories = res.data.map(cat => ({
-          key: cat.key,
-          label: cat.label,
-        }));
-
-        // Extract subcategories
-        const fetchedSubcategories = {};
-        res.data.forEach(cat => {
-          fetchedSubcategories[cat.key] = cat.subCategories || [];
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch('http://localhost:3001/api/v1/category', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include'
         });
 
-        setCategories(fetchedCategories);
-        setSubcategories(fetchedSubcategories);
+        const data = await res.json();
+
+        if (data.status && Array.isArray(data.data)) {
+          const fetchedCategories = data.data.map(cat => ({
+            key: cat.key,
+            label: cat.label,
+          }));
+
+          const fetchedSubcategories = {};
+          data.data.forEach(cat => {
+            fetchedSubcategories[cat.key] = cat.subCategories || [];
+          });
+
+          setCategories(fetchedCategories);
+          setSubcategories(fetchedSubcategories);
+        } else {
+          throw new Error(data.message || "Invalid category data format");
+        }
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+        setError("Failed to load categories");
+      } finally {
+        setLoading(false);
       }
-    })
-    .catch(error => {
-      console.error("Error fetching categories:", error);
-    });
-}, []);
+    };
+
+    fetchCategories();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="w-full border-b shadow-sm z-40 bg-white dark:bg-gray-900">
+        <div className="max-w-screen-2xl mx-auto px-6 py-4 text-sm text-muted-foreground">
+          Loading categories...
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full border-b shadow-sm z-40 bg-white dark:bg-gray-900">
+        <div className="max-w-screen-2xl mx-auto px-6 py-4 text-sm text-red-500">
+          {error}
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="w-full border-b shadow-sm z-40">
+    <div className="w-full border-b shadow-sm z-40 bg-white dark:bg-gray-900">
       <div className="max-w-screen-2xl mx-auto flex items-center justify-between px-6 py-3 gap-8">
         <NavigationMenu>
           <NavigationMenuList className="flex space-x-4">
@@ -70,7 +98,7 @@ useEffect(() => {
                           <li key={i}>
                             <NavigationMenuLink asChild>
                               <Link
-                                to={`/category/${sub.toLowerCase().replace(/\s+/g, "-")}`}
+                                to={`/sub-category/${sub.toLowerCase().replace(/\s+/g, "-")}`}
                                 className="text-sm text-muted-foreground hover:text-primary"
                               >
                                 {sub}
@@ -95,7 +123,7 @@ useEffect(() => {
         </NavigationMenu>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default CategoriesNavBar
+export default CategoriesNavBar;

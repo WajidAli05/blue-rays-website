@@ -12,6 +12,7 @@ import Footer from './components/Footer';
 import Contact from './pages/Contact';
 import LoginPage from './pages/LoginPage';
 import Products from './pages/Products';
+import ProductsBySubCategory from './pages/ProductsBySubCategory';
 
 function App() {
   const [announcements, setAnnouncements] = useState([]);
@@ -80,6 +81,7 @@ useEffect(() => {
           <Route path="/faqs" element={<Faqs />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/products/:category" element={<Products />} />
+          <Route path='/sub-category/:subcategory' element={<ProductsBySubCategory />} />
         </Routes>
       </main>
 

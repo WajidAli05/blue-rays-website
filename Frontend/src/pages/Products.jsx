@@ -10,14 +10,15 @@ const Products = () => {
   const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { category } = useParams();
   const [filters, setFilters] = useState({
     category: [],
     price: [0, 1000],
     sort: "",
   });
   const [subCategories, setSubCategories] = useState([]);
-
+  
+  const { category } = useParams();
+  
   const fetchProducts = () => {
     setLoading(true);
     setError(null); // Reset error state
