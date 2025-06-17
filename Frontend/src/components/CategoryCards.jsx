@@ -7,42 +7,42 @@ import { motion } from "framer-motion";
 const categories = [
   {
     name: "Electronics",
-    image: "/src/assets/categories/electronics.jpg",
+    image: "/src/assets/categories/electronics.webp",
     description: "Discover the latest gadgets, phones, and accessories.",
   },
   {
     name: "Clothing",
-    image: "/src/assets/categories/clothing.jpg",
+    image: "/src/assets/categories/clothing.webp",
     description: "Find stylish outfits for every occasion and season.",
   },
   {
     name: "Books",
-    image: "/src/assets/categories/books.jpg",
+    image: "/src/assets/categories/books.webp",
     description: "Explore worlds, knowledge, and stories across genres.",
   },
   {
     name: "Home & Kitchen",
-    image: "/src/assets/categories/kitchen.jpg",
+    image: "/src/assets/categories/kitchen.webp",
     description: "Upgrade your home with modern and functional essentials.",
   },
   {
     name: "Sports & Outdoors",
-    image: "/src/assets/categories/sports.jpg",
+    image: "/src/assets/categories/sports.webp",
     description: "Gear up for adventure, fitness, and outdoor fun.",
   },
   {
     name: "Toys & Games",
-    image: "/src/assets/categories/toys.jpg",
+    image: "/src/assets/categories/toys.webp",
     description: "Fun, learning, and imagination for all ages.",
   },
   {
     name: "Health & Beauty",
-    image: "/src/assets/categories/beauty.jpg",
+    image: "/src/assets/categories/beauty.webp",
     description: "Look and feel your best with wellness products.",
   },
   {
     name: "Digital Products",
-    image: "/src/assets/categories/digital.jpg",
+    image: "/src/assets/categories/digital.webp",
     description: "Instant access to software, e-books, and online courses.",
   }
 ];
