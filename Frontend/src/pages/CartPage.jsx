@@ -2,24 +2,17 @@
 
 import React from "react"
 import { useCart } from "@/contexts/CartContext"
+import { useNavigate } from "react-router-dom"
 import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+  Button
+} from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Minus, Plus, Trash2 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
 const CartPage = () => {
   const { cartItems, removeFromCart, addToCart } = useCart()
+  const navigate = useNavigate()
 
   const handleDecrease = (product) => {
     if (product.qty === 1) {
@@ -100,49 +93,27 @@ const CartPage = () => {
             Subtotal: ${subtotal.toFixed(2)}
           </div>
 
-          {/* Drawer for checkout */}
-          <Drawer>
-            <DrawerTrigger asChild>
-              <Button className="w-full mt-4 text-lg py-6">Complete Your Order</Button>
-            </DrawerTrigger>
-            <DrawerContent>
-              <div className="mx-auto w-full max-w-lg p-4">
-                <DrawerHeader>
-                  <DrawerTitle>Checkout</DrawerTitle>
-                  <DrawerDescription>Confirm your order and proceed to payment</DrawerDescription>
-                </DrawerHeader>
+          {/* Proceed to Shipping */}
+          <div>
+            <Button
+              className="w-full mt-4 text-lg py-6"
+              disabled={cartItems.length === 0}
+              onClick={() => navigate('/shipping')}
+            >
+              Proceed to Shipping
+            </Button>
 
-                <div className="space-y-2">
-                  {cartItems.map((item) => (
-                    <div
-                      key={item._id}
-                      className="flex justify-between items-center border-b pb-2"
-                    >
-                      <span>{item.name} x {item.qty}</span>
-                      <span className="font-semibold">${(item.qty * item.price).toFixed(2)}</span>
-                    </div>
-                  ))}
-                  <Separator />
-                  <div className="flex justify-between text-lg font-bold">
-                    <span>Total</span>
-                    <span>${subtotal.toFixed(2)}</span>
-                  </div>
-                </div>
-
-                <DrawerFooter className="mt-4">
-                  <Button className="w-full">Proceed to Payment</Button>
-                  <DrawerClose asChild>
-                    <Button variant="outline" className="w-full">Cancel</Button>
-                  </DrawerClose>
-                </DrawerFooter>
-              </div>
-            </DrawerContent>
-          </Drawer>
+            {cartItems.length === 0 && (
+              <p className="mt-4 text-sm text-center text-muted-foreground">
+                🛒 Your cart is empty. Please <span className="text-primary font-semibold">go back and add some products</span> to continue.
+              </p>
+            )}
+          </div>
         </>
       ) : (
-    <div className="text-center mt-12 px-4 py-6 border border-red-500 bg-red-100 text-red-700 rounded-md font-medium">
-    Your cart is empty
-    </div>
+        <div className="text-center mt-12 px-4 py-6 border border-red-500 bg-red-100 text-red-700 rounded-md font-medium">
+          Your cart is empty
+        </div>
       )}
     </div>
   )

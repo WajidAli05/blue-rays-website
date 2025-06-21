@@ -14,6 +14,7 @@ import LoginPage from './pages/LoginPage';
 import Products from './pages/Products';
 import ProductsBySubCategory from './pages/ProductsBySubCategory';
 import CartPage from './pages/CartPage';
+import ShippingPage from './pages/ShippingPage';
 
 function App() {
   const [announcements, setAnnouncements] = useState([]);
@@ -82,6 +83,7 @@ useEffect(() => {
           <Route path="/faqs" element={<Faqs />} />
           <Route path="/contact" element={<Contact />} />
           <Route path='/cart' element={<CartPage />} />
+          <Route path='/shipping' element={<ShippingPage />} />
           <Route path="/products/:category" element={<Products />} />
           <Route path='/sub-category/:subcategory' element={<ProductsBySubCategory />} />
         </Routes>
