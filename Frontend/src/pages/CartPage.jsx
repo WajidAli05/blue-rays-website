@@ -3,28 +3,14 @@
 import React from "react"
 import { useCart } from "@/contexts/CartContext"
 import { useNavigate } from "react-router-dom"
-import {
-  Button
-} from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Minus, Plus, Trash2 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
 const CartPage = () => {
-  const { cartItems, removeFromCart, addToCart } = useCart()
+  const { cartItems, addToCart, decreaseFromCart, removeFromCart } = useCart()
   const navigate = useNavigate()
-
-  const handleDecrease = (product) => {
-    if (product.qty === 1) {
-      removeFromCart(product._id)
-    } else {
-      const updatedProduct = { ...product, qty: product.qty - 1 }
-      removeFromCart(product._id)
-      for (let i = 0; i < updatedProduct.qty; i++) {
-        addToCart(product)
-      }
-    }
-  }
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.qty * item.price, 0)
 
@@ -61,7 +47,7 @@ const CartPage = () => {
                       <Button
                         variant="outline"
                         size="icon"
-                        onClick={() => handleDecrease(item)}
+                        onClick={() => decreaseFromCart(item._id)} 
                       >
                         <Minus className="w-4 h-4" />
                       </Button>
@@ -76,7 +62,7 @@ const CartPage = () => {
                       <Button
                         variant="destructive"
                         size="icon"
-                        onClick={() => removeFromCart(item._id)}
+                        onClick={() => removeFromCart(item._id)} 
                         className="ml-auto"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -102,17 +88,11 @@ const CartPage = () => {
             >
               Proceed to Shipping
             </Button>
-
-            {cartItems.length === 0 && (
-              <p className="mt-4 text-sm text-center text-muted-foreground">
-                🛒 Your cart is empty. Please <span className="text-primary font-semibold">go back and add some products</span> to continue.
-              </p>
-            )}
           </div>
         </>
       ) : (
         <div className="text-center mt-12 px-4 py-6 border border-red-500 bg-red-100 text-red-700 rounded-md font-medium">
-          Your cart is empty
+          Your cart is empty. Please add some products to continue.
         </div>
       )}
     </div>

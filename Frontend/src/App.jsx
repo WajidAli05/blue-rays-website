@@ -15,65 +15,76 @@ import Products from './pages/Products';
 import ProductsBySubCategory from './pages/ProductsBySubCategory';
 import CartPage from './pages/CartPage';
 import ShippingPage from './pages/ShippingPage';
+import { Toaster } from 'sonner';
 
 function App() {
   const [announcements, setAnnouncements] = useState([]);
   const [currentAnnouncement, setCurrentAnnouncement] = useState('Welcome to our website!');
   const location = useLocation();
+
   const isSignupPage = location.pathname === '/signup';
   const isLoginPage = location.pathname === '/login';
-
   const hideBars = isSignupPage || isLoginPage;
 
-  //fetch announcements
-const fetchAnnouncements = () => {
-  fetch('http://localhost:3001/api/v1/active-announcement', {
-    method: 'GET',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-    }
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.status && Array.isArray(data.data)) {
-        setAnnouncements(data.data);
+  // ✅ Fetch announcements from backend
+  const fetchAnnouncements = () => {
+    fetch('http://localhost:3001/api/v1/active-announcement', {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
       }
     })
-    .catch((error) => {
-      console.error("Error fetching announcements:", error);
-    });
-};
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status && Array.isArray(data.data)) {
+          setAnnouncements(data.data);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching announcements:", error);
+      });
+  };
 
-  useEffect(()=> {
+  useEffect(() => {
     fetchAnnouncements();
   }, []);
 
+  //  Rotate announcements every 5 seconds
+  useEffect(() => {
+    if (announcements.length === 0) return;
 
-useEffect(() => {
-  if (announcements.length === 0) return;
-
-  let index = 0;
-  setCurrentAnnouncement(announcements[index].message); 
-
-  const interval = setInterval(() => {
-    index = (index + 1) % announcements.length;
+    let index = 0;
     setCurrentAnnouncement(announcements[index].message);
-  }, 5000);
 
-  return () => clearInterval(interval);
-}, [announcements]);
+    const interval = setInterval(() => {
+      index = (index + 1) % announcements.length;
+      setCurrentAnnouncement(announcements[index].message);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [announcements]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-black flex flex-col">
+      {/*  Top bars (hidden on signup/login pages) */}
       {!hideBars && (
         <>
-          <AnnouncementBar text= {currentAnnouncement || "Welcome to our website!"} />
+          <AnnouncementBar text={currentAnnouncement || "Welcome to our website!"} />
           <NavBar />
           <CategoriesNavBar />
         </>
       )}
 
+      {/*  Sonner Toaster for notifications */}
+      <Toaster   richColors
+                position="top-right"
+                duration={3000}
+                closeButton
+                theme="dark" 
+      />
+
+      {/*  Main content */}
       <main className="flex-grow">
         <Routes>
           <Route path="/" element={<Home />} />
@@ -82,13 +93,14 @@ useEffect(() => {
           <Route path="/about" element={<About />} />
           <Route path="/faqs" element={<Faqs />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path='/cart' element={<CartPage />} />
-          <Route path='/shipping' element={<ShippingPage />} />
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/shipping" element={<ShippingPage />} />
           <Route path="/products/:category" element={<Products />} />
-          <Route path='/sub-category/:subcategory' element={<ProductsBySubCategory />} />
+          <Route path="/sub-category/:subcategory" element={<ProductsBySubCategory />} />
         </Routes>
       </main>
 
+      {/*  Footer (also hidden on signup/login pages) */}
       {!hideBars && <Footer />}
     </div>
   );

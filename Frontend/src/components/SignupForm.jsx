@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Float, Stage } from "@react-three/drei";
 import { useForm } from "react-hook-form";
@@ -9,6 +9,7 @@ import { useNavigate, Link } from "react-router-dom"; // added Link import
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { toast } from 'sonner';
 
 // 3D Shopping Bag from primitives
 function ShoppingBagPrimitive() {
@@ -59,8 +60,33 @@ const SignupForm = ()=> {
   });
 
   const onSubmit = (data) => {
-    console.log("Form submitted:", data);
-  };
+    const fullPhone = data.phone ? `${data.country}${data.phone}` : "";
+  
+    const user = {
+      name: data.fullName,
+      email: data.email,
+      password: data.password,
+      phone: fullPhone,
+      country: data.country, // country code like +92
+    };
+
+    fetch('http://localhost:3001/api/v1/user/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(user)
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data)
+      data.status? toast.success(data.message) : toast.error(data.message)
+    })
+    .catch(error => {
+      console.log(error.message)
+    })
+   
+  };  
 
   const handleSignInWithGoogle = (response) => {
     const { credential } = response;
@@ -116,10 +142,26 @@ const SignupForm = ()=> {
                 <FormControl>
                   <select {...field} className="w-full h-10 rounded-md border border-input px-3 text-sm">
                     <option value="">Select country</option>
-                    <option value="+1">USA</option>
-                    <option value="+44">UK</option>
-                    <option value="+92">Pakistan</option>
+                    <option value="+1">United States</option>
+                    <option value="+1">Canada</option>
+                    <option value="+52">Mexico</option>
+                    <option value="+55">Brazil</option>
+                    <option value="+44">United Kingdom</option>
+                    <option value="+49">Germany</option>
+                    <option value="+33">France</option>
+                    <option value="+39">Italy</option>
+                    <option value="+34">Spain</option>
+                    <option value="+31">Netherlands</option>
+                    <option value="+48">Poland</option>
+                    <option value="+46">Sweden</option>
+                    <option value="+32">Belgium</option>
+                    <option value="+61">Australia</option>
+                    <option value="+81">Japan</option>
                     <option value="+91">India</option>
+                    <option value="+971">United Arab Emirates</option>
+                    <option value="+966">Saudi Arabia</option>
+                    <option value="+65">Singapore</option>
+                    <option value="+90">Turkey</option>
                   </select>
                 </FormControl>
                 <FormMessage />
