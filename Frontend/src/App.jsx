@@ -15,6 +15,7 @@ import Products from './pages/Products';
 import ProductsBySubCategory from './pages/ProductsBySubCategory';
 import CartPage from './pages/CartPage';
 import ShippingPage from './pages/ShippingPage';
+import ProtectedRoutes from './utils/ProtectedRoutes';
 import { Toaster } from 'sonner';
 
 function App() {
@@ -93,8 +94,10 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/faqs" element={<Faqs />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/cart" element={<CartPage />} />
-          <Route path="/shipping" element={<ShippingPage />} />
+          <Route element={<ProtectedRoutes />} >
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/shipping" element={<ShippingPage />} />
+          </Route>
           <Route path="/products/:category" element={<Products />} />
           <Route path="/sub-category/:subcategory" element={<ProductsBySubCategory />} />
         </Routes>
