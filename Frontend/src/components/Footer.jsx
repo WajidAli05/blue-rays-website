@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 import {
   Facebook,
   Instagram,
@@ -7,8 +7,8 @@ import {
   Mail,
   Phone,
   MapPin,
-} from "lucide-react"
-import { Link } from "react-router-dom"
+} from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -81,11 +81,24 @@ const Footer = () => {
       </div>
 
       {/* Bottom Bar */}
-      <div className="border-t border-blue-800 mt-10 pt-4 text-center text-xs text-blue-300">
-        &copy; {new Date().getFullYear()} Blue Rays Technologies LLC. All rights reserved.
+      <div className="border-t border-blue-800 mt-10 pt-4 text-center text-xs text-blue-300 space-y-2">
+        <div>
+          &copy; {new Date().getFullYear()} Blue Rays Technologies LLC. All rights reserved.
+        </div>
+        <div>
+          Developed by{" "}
+          <a
+            href="https://www.upwork.com/freelancers/~014724411e6338e0e8?mp_source=share"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white font-semibold underline hover:text-blue-200 transition-all duration-200"
+          >
+            Wajid Ali
+          </a>
+        </div>
       </div>
     </footer>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;
