@@ -5,10 +5,12 @@ import HomeCarousal from "@/components/HomeCarousal";
 import CategoryCards from "@/components/CategoryCards";
 import SignInCTA from "@/components/SignInCTA";
 import Loader from "@/components/Loader";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Home = () => {
   const [isPageReady, setIsPageReady] = useState(false);
   const [showLoader, setShowLoader] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     const delayTimer = setTimeout(() => {

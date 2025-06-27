@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
 
 // ✅ Zod schema (optional but supported even in JS projects)
 const loginSchema = z.object({
@@ -44,7 +45,8 @@ function LockIcon3D() {
 }
 
 const LoginPage = () => {
-  const navigate = useNavigate();
+const { login } = useAuth();
+const navigate = useNavigate();
 
   const form = useForm({
     resolver: zodResolver(loginSchema),
@@ -53,12 +55,15 @@ const LoginPage = () => {
       password: "",
     },
   });
-
+  
   const onSubmit = (data) => {
-    console.log("Login data:", data);
-    // Replace with real API call
-    navigate("/");
-  };
+  const { email, password } = data;
+
+  // Login using AuthContext and redirect after login
+  login(email, password, () => {
+    navigate("/cart"); // Or navigate("/") or use previous route logic
+  });
+};
 
   const handleGoogleLogin = (response) => {
     const { credential } = response;
