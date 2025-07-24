@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { useEffect } from "react"
 import { useCart } from "@/contexts/CartContext"
 import { useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
@@ -9,10 +9,18 @@ import { Minus, Plus, Trash2 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 
 const CartPage = () => {
-  const { cartItems, addToCart, decreaseFromCart, removeFromCart } = useCart()
+  const { cartItems, increaseQuantity, decreaseQuantity, removeFromCart, fetchCartItems } = useCart()
   const navigate = useNavigate()
+  if (!cartItems) {
+    return <div className="text-center p-6">Loading cart...</div>
+  }
+  const subtotal = cartItems.reduce((acc, item) => acc + item?.quantity * item.productId?.price, 0)
+  
+  //Fetch cart items on mount
+  useEffect(() => {
+    fetchCartItems()
+  }, [])
 
-  const subtotal = cartItems.reduce((acc, item) => acc + item.qty * item.price, 0)
 
   return (
     <div className="p-6 space-y-6">
@@ -36,33 +44,33 @@ const CartPage = () => {
                   className="flex items-center gap-4 border rounded-lg p-4 shadow-sm bg-white dark:bg-zinc-900"
                 >
                   <img
-                    src={item.image || "https://via.placeholder.com/80"}
-                    alt={item.name}
+                    src={item.productId?.image || "https://via.placeholder.com/80"}
+                    alt={item.productId?.name}
                     className="w-20 h-20 object-cover rounded-md"
                   />
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold">{item.name}</h3>
-                    <p className="text-sm text-muted-foreground">${item.price.toFixed(2)}</p>
+                    <h3 className="text-lg font-semibold">{item.productId?.name}</h3>
+                    <p className="text-sm text-muted-foreground">${Number(item.productId?.price).toFixed(2)}</p>
                     <div className="flex items-center gap-2 mt-2">
                       <Button
                         variant="outline"
                         size="icon"
-                        onClick={() => decreaseFromCart(item._id)} 
+                        onClick={() => decreaseQuantity(item.productId._id)} 
                       >
                         <Minus className="w-4 h-4" />
                       </Button>
-                      <span className="text-md font-semibold">{item.qty}</span>
+                      <span className="text-md font-semibold">{item.quantity}</span>
                       <Button
                         variant="outline"
                         size="icon"
-                        onClick={() => addToCart(item)}
+                        onClick={() => increaseQuantity(item.productId._id)}
                       >
                         <Plus className="w-4 h-4" />
                       </Button>
                       <Button
                         variant="destructive"
                         size="icon"
-                        onClick={() => removeFromCart(item._id)} 
+                        onClick={() => removeFromCart(item.productId._id)} 
                         className="ml-auto"
                       >
                         <Trash2 className="w-4 h-4" />

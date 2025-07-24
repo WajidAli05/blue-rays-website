@@ -47,8 +47,6 @@ const NavBar = () => {
   const location = useLocation();
   const [loginDialogOpen, setLoginDialogOpen] = useState(false);
 
-  const totalItems = cartItems.reduce((sum, item) => sum + item.qty, 0);
-
   const form = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -111,7 +109,7 @@ const NavBar = () => {
                 className="absolute -top-3 -right-4 h-5 min-w-5 rounded-full px-1 text-xs font-mono tabular-nums z-10"
                 variant="destructive"
               >
-                {totalItems}
+                {cartItems ? cartItems.length : 0}
               </Badge>
               <ShoppingCart className="w-5 h-5" />
             </Link>
