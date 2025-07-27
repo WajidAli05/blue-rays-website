@@ -1,5 +1,5 @@
 import './App.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
 import SignupForm from "./components/SignupForm";
 import { Home } from './pages/Home';
@@ -17,11 +17,13 @@ import CartPage from './pages/CartPage';
 import ShippingPage from './pages/ShippingPage';
 import { Toaster } from 'sonner';
 import ProtectedRoutes from './utils/ProtectedRoutes';
+import { isMobile } from 'react-device-detect';
 
 function App() {
   const [announcements, setAnnouncements] = useState([]);
   const [currentAnnouncement, setCurrentAnnouncement] = useState('Welcome to our website!');
   const location = useLocation();
+  const hasTracked = useRef(false);
 
   const isSignupPage = location.pathname === '/signup';
   const isLoginPage = location.pathname === '/login';
@@ -46,6 +48,38 @@ function App() {
         console.error("Error fetching announcements:", error);
       });
   };
+
+//track device type: mobile or desktop
+useEffect(() => {  
+  // Prevent sending multiple times in one session
+  if (!hasTracked.current && !sessionStorage.getItem('deviceTracked')) {
+    const deviceType = isMobile ? 'mobile' : 'desktop';
+    console.log('Tracking device type:', deviceType);
+
+    fetch('http://localhost:3001/api/v1/trackDevice', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ deviceType }),
+    })
+      .then((res) => {
+        if (res.ok) {
+          sessionStorage.setItem('deviceTracked', 'true');
+          console.log('Device type tracked successfully:', deviceType);
+        } else {
+          console.log('Tracking failed with status:', res.status);
+        }
+      })
+      .catch((err) => {
+        console.error('Error tracking device:', err);
+      });
+
+    hasTracked.current = true;
+  } else {
+    console.log('Device tracking skipped (already tracked this session)');
+  }
+}, []);
 
   useEffect(() => {
     fetchAnnouncements();
