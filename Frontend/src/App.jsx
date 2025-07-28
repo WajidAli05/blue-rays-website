@@ -49,12 +49,42 @@ function App() {
       });
   };
 
+//track session duration, ip and user agent
+useEffect(() => {
+  // Retrieve or set session start time
+  let sessionStart = sessionStorage.getItem('sessionStart');
+
+  if (!sessionStart) {
+    sessionStart = Date.now().toString();
+    sessionStorage.setItem('sessionStart', sessionStart);
+  }
+
+  const sendSessionDuration = () => {
+    const duration = Math.floor((Date.now() - parseInt(sessionStart)) / 1000); // in seconds
+
+    const data = JSON.stringify({ duration });
+
+    // Send the session duration before unload
+    navigator.sendBeacon('http://localhost:3001/api/v1/session-duration', data);
+
+    // Remove sessionStart to mark end of session
+    sessionStorage.removeItem('sessionStart');
+  };
+
+  // Attach unload event
+  window.addEventListener('beforeunload', sendSessionDuration);
+
+  return () => {
+    sendSessionDuration(); // Covers route changes or unmounts in SPA
+    window.removeEventListener('beforeunload', sendSessionDuration);
+  };
+}, []);
+
 //track device type: mobile or desktop
 useEffect(() => {  
   // Prevent sending multiple times in one session
   if (!hasTracked.current && !sessionStorage.getItem('deviceTracked')) {
     const deviceType = isMobile ? 'mobile' : 'desktop';
-    console.log('Tracking device type:', deviceType);
 
     fetch('http://localhost:3001/api/v1/trackDevice', {
       method: 'POST',
@@ -66,9 +96,6 @@ useEffect(() => {
       .then((res) => {
         if (res.ok) {
           sessionStorage.setItem('deviceTracked', 'true');
-          console.log('Device type tracked successfully:', deviceType);
-        } else {
-          console.log('Tracking failed with status:', res.status);
         }
       })
       .catch((err) => {
@@ -76,8 +103,6 @@ useEffect(() => {
       });
 
     hasTracked.current = true;
-  } else {
-    console.log('Device tracking skipped (already tracked this session)');
   }
 }, []);
 
