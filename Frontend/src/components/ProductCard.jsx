@@ -4,6 +4,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/contexts/CartContext"
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from "sonner";
+import { useNavigate } from 'react-router-dom';
 
 // Capitalize first letter of any string
 const capitalize = str => str?.charAt(0).toUpperCase() + str?.slice(1).toLowerCase();
@@ -11,6 +14,8 @@ const capitalize = str => str?.charAt(0).toUpperCase() + str?.slice(1).toLowerCa
 const ProductCard = ({ product }) => {
   //get addToCart function from CartContext
   const { addToCart } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   if (!product) {
     return (
@@ -19,6 +24,32 @@ const ProductCard = ({ product }) => {
       </Card>
     );
   }
+
+const handleAddToCart = () => {
+  if (!user) {
+    // Show info toast first
+    toast.info("Login to continue shopping!");
+
+    // Wait ~700ms before showing promise toast
+    setTimeout(() => {
+      const promise = new Promise((resolve) => {
+        setTimeout(resolve, 2000); // main 2s delay
+      });
+
+      toast.promise(promise, {
+        loading: 'Redirecting to login...',
+        success: 'Redirecting now!',
+        error: 'Something went wrong!',
+      });
+
+      promise.then(() => {
+        navigate("/login");
+      });
+    }, 700); // short delay to let the info toast stay visible
+  } else {
+    addToCart(product);
+  }
+};
 
   return (
     <Card
@@ -56,7 +87,7 @@ const ProductCard = ({ product }) => {
           </span>
 
           <Button
-            onClick={() => addToCart(product)}
+            onClick={handleAddToCart}
             className="bg-white text-black hover:bg-gray-100 relative z-10 cursor-pointer"
           >
             <ShoppingCart className="w-4 h-4 mr-2" />
