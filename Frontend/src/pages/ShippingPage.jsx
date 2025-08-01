@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Separator } from "@/components/ui/separator"
 import { Drawer, DrawerContent, DrawerDescription, DrawerHeader, DrawerTitle, DrawerTrigger, DrawerFooter, DrawerClose } from "@/components/ui/drawer"
 import { MapPin, Package, CreditCard } from "lucide-react"
+import { toast } from "sonner";
 
 const ShippingPage = () => {
   const { cartItems } = useCart()
@@ -29,10 +30,48 @@ const ShippingPage = () => {
 
   const [errors, setErrors] = useState({})
 
-  const subtotal = cartItems.reduce((acc, item) => acc + item.qty * item.price, 0)
+  const subtotal = cartItems.reduce((acc, item) => acc + item.quantity * item.productId.price, 0)
   const shippingCost = 9.99
   const tax = subtotal * 0.08 // 8% tax
   const total = subtotal + shippingCost + tax
+
+  //fetch existing shipping data if available
+useEffect(() => {
+  fetch('http://localhost:3001/api/v1/shipping/user', {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then(result => {
+      const shipping = result?.data?.[0]; // safely get the first shipping record
+      if (shipping) {
+        setShippingData(prev => ({
+          ...prev,
+          firstName: shipping.firstName || "",
+          lastName: shipping.lastName || "",
+          email: shipping.email || "",
+          phone: shipping.phone || "",
+          address: shipping.address || "",
+          apartment: shipping.apartment || "",
+          city: shipping.city || "",
+          state: shipping.state || "",
+          postalCode: shipping.postalCode || "",
+          country: shipping.country || "United States"
+        }));
+      }
+    })
+    .catch(error => {
+      console.error("Error fetching shipping data:", error);
+    });
+}, []);
 
   useEffect(() => {
     if (cartItems.length === 0) {
@@ -78,6 +117,28 @@ const ShippingPage = () => {
     e.preventDefault()
     if (validateForm()) {
       setIsDrawerOpen(true)
+      
+      //post the shipping data to the server
+      fetch('http://localhost:3001/api/v1/shipping', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(shippingData),
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then(data => {
+        toast.success("Shipping information submitted successfully!");
+      })
+      .catch(error => {
+        toast.error("Failed to submit shipping information.");
+      });
     }
   }
 
@@ -262,12 +323,12 @@ const ShippingPage = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             {cartItems.map((item) => (
-              <div key={item._id} className="flex justify-between items-center">
+              <div key={item.productId._id} className="flex justify-between items-center">
                 <div>
-                  <span className="font-medium">{item.name}</span>
-                  <span className="text-gray-500 ml-2">× {item.qty}</span>
+                  <span className="font-medium">{item.productId.name}</span>
+                  <span className="text-gray-500 ml-2">× {item.quantity}</span>
                 </div>
-                <span className="font-semibold">${(item.qty * item.price).toFixed(2)}</span>
+                <span className="font-semibold">${(item.quantity * item.productId.price).toFixed(2)}</span>
               </div>
             ))}
 
@@ -335,8 +396,8 @@ const ShippingPage = () => {
                   <div className="space-y-2">
                     {cartItems.map((item) => (
                       <div key={item._id} className="flex justify-between items-center text-sm">
-                        <span>{item.name} × {item.qty}</span>
-                        <span className="font-medium">${(item.qty * item.price).toFixed(2)}</span>
+                        <span>{item.name} × {item.quantity}</span>
+                        <span className="font-medium">${(item.quantity * item.productId.price).toFixed(2)}</span>
                       </div>
                     ))}
                   </div>
